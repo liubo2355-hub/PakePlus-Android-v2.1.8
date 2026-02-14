@@ -1,11 +1,687 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        PakePlus
-    </body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生点名系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-btn.active {
+            background: #4F46E5;
+            color: white;
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1E293B;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #4F46E5;
+        }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+        .btn-warning {
+            background: #F59E0B;
+            color: white;
+        }
+        .btn-primary {
+            background: #4F46E5;
+            color: white;
+        }
+        .btn-purple {
+            background: #8B5CF6;
+            color: white;
+        }
+        .student-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #F1F5F9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .student-item:last-child {
+            margin-bottom: 0;
+        }
+        .roll-result {
+            text-align: center;
+            padding: 40px 20px;
+            background: #F1F5F9;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #DC2626;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 10px 15px;
+            background: #F1F5F9;
+            border-radius: 8px;
+        }
+        .stat-num {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #94A3B8;
+        }
+        .status-msg {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .status-success {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        .status-error {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        .history-item {
+            padding: 15px;
+            background: #F1F5F9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .history-date {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4F46E5;
+            margin-bottom: 5px;
+        }
+        .history-info {
+            font-size: 14px;
+            color: #475569;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 学生点名系统</h1>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showScreen('student')">学生管理</button>
+            <button class="nav-btn" onclick="showScreen('rollcall')">随机点名</button>
+            <button class="nav-btn" onclick="showScreen('attendance')">签到</button>
+            <button class="nav-btn" onclick="showScreen('history')">历史</button>
+        </div>
+        
+        <!-- 学生管理界面 -->
+        <div id="student-screen" class="screen">
+            <div class="card">
+                <div class="card-title">👥 学生管理</div>
+                <div class="input-group">
+                    <input type="text" id="student-name" placeholder="学生姓名">
+                    <input type="text" id="student-code" placeholder="编码（5位）" style="width: 100px;">
+                    <button class="btn btn-success" onclick="addStudent()">添加</button>
+                </div>
+                <div id="student-list" class="student-list"></div>
+                <div class="input-group">
+                    <button class="btn btn-purple" onclick="showBatchImport()" style="flex:1;">批量导入</button>
+                </div>
+                <div class="input-group">
+                    <button class="btn btn-danger" onclick="deleteSelected()" style="flex:1;">删除选中</button>
+                    <button class="btn btn-warning" onclick="clearAllStudents()" style="flex:1;">清空名单</button>
+                </div>
+                
+                <!-- 批量导入弹窗 -->
+                <div id="batch-import-modal" class="hidden" style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                    <div class="card" style="width: 90%; max-width: 400px;">
+                        <div class="card-title">📥 批量导入学生</div>
+                        <p style="font-size:12px; color:#94A3B8; margin-bottom:10px;">每行一个学生，格式：姓名,编码（编码可选）</p>
+                        <p style="font-size:12px; color:#94A3B8; margin-bottom:15px;">例如：张三,00001 或 李四</p>
+                        <textarea id="batch-input" style="width:100%; height:150px; padding:10px; border:2px solid #E2E8F0; border-radius:10px; font-size:14px; resize:none; margin-bottom:15px;" placeholder="张三,00001&#10;李四&#10;王五,00003"></textarea>
+                        <div class="input-group">
+                            <button class="btn btn-purple" onclick="doBatchImport()" style="flex:1;">确认导入</button>
+                            <button class="btn btn-warning" onclick="hideBatchImport()" style="flex:1;">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 随机点名界面 -->
+        <div id="rollcall-screen" class="screen hidden">
+            <div class="card">
+                <div class="card-title">🎲 随机点名</div>
+                <div class="input-group">
+                    <span style="padding: 12px; color: #475569;">点名人数:</span>
+                    <input type="number" id="roll-num" value="1" min="1" style="width: 80px;">
+                    <button class="btn btn-primary" onclick="randomRollCall()">随机点名</button>
+                </div>
+                <div class="roll-result" id="roll-result">等待点名...</div>
+                <div id="roll-progress" style="text-align: center; color: #94A3B8;"></div>
+            </div>
+        </div>
+        
+        <!-- 签到界面 -->
+        <div id="attendance-screen" class="screen hidden">
+            <div class="card">
+                <div class="card-title">✅ 学生签到</div>
+                <div id="attendance-status" class="status-msg hidden"></div>
+                <div class="stats" id="attendance-stats"></div>
+                <div class="input-group">
+                    <input type="text" id="attendance-code" placeholder="请输入编码（逗号分隔批量）">
+                    <button class="btn btn-success" onclick="checkCode()">签到</button>
+                </div>
+                <div id="attended-list" class="student-list"></div>
+                <button class="btn btn-primary" style="width:100%;" onclick="finishAttendance()">完成签到</button>
+            </div>
+        </div>
+        
+        <!-- 历史记录界面 -->
+        <div id="history-screen" class="screen hidden">
+            <div class="card">
+                <div class="card-title">📅 签到历史</div>
+                <div id="history-list"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let students = [];
+        let attendanceRecords = {};
+        let currentIndex = 0;
+        let attendedStudents = [];
+        let selectedStudents = new Set();
+        let isAnimating = false;
+        
+        function loadData() {
+            const saved = localStorage.getItem('studentRollCallData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                students = data.students || [];
+                attendanceRecords = data.attendance || {};
+                currentIndex = data.currentIndex || 0;
+            }
+            updateStudentList();
+            updateAttendanceStats();
+            updateHistoryList();
+        }
+        
+        function saveData() {
+            const data = {
+                students: students,
+                attendance: attendanceRecords,
+                currentIndex: currentIndex
+            };
+            localStorage.setItem('studentRollCallData', JSON.stringify(data));
+        }
+        
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(screen + '-screen').classList.remove('hidden');
+            event.target.classList.add('active');
+            
+            if (screen === 'attendance') {
+                initAttendance();
+            }
+        }
+        
+        function addStudent() {
+            const name = document.getElementById('student-name').value.trim();
+            let code = document.getElementById('student-code').value.trim();
+            
+            if (!name) {
+                alert('请输入学生姓名！');
+                return;
+            }
+            
+            if (students.some(s => s.name === name)) {
+                alert('学生 "' + name + '" 已存在！');
+                return;
+            }
+            
+            if (code) {
+                if (!code.match(/^\d{5}$/)) {
+                    alert('编码必须是5位数字！');
+                    return;
+                }
+                if (students.some(s => s.code === code)) {
+                    alert('编码 "' + code + '" 已存在！');
+                    return;
+                }
+            } else {
+                if (students.length > 0) {
+                    const maxCode = Math.max(...students.map(s => parseInt(s.code)));
+                    code = String(maxCode + 1).padStart(5, '0');
+                } else {
+                    code = '00001';
+                }
+            }
+            
+            students.push({name: name, code: code});
+            saveData();
+            updateStudentList();
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-code').value = '';
+        }
+        
+        function updateStudentList() {
+            const list = document.getElementById('student-list');
+            list.innerHTML = '';
+            selectedStudents.clear();
+            
+            students.forEach((student, index) => {
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" onchange="toggleSelect(${index}, this.checked)">
+                        <span>${student.name} (${student.code})</span>
+                    </label>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function toggleSelect(index, checked) {
+            if (checked) {
+                selectedStudents.add(index);
+            } else {
+                selectedStudents.delete(index);
+            }
+        }
+        
+        function deleteSelected() {
+            if (selectedStudents.size === 0) {
+                alert('请先选中要删除的学生！');
+                return;
+            }
+            
+            const toDelete = Array.from(selectedStudents).sort((a, b) => b - a);
+            toDelete.forEach(idx => students.splice(idx, 1));
+            saveData();
+            updateStudentList();
+        }
+        
+        function clearAllStudents() {
+            if (students.length === 0) return;
+            if (confirm('确定清空所有学生？')) {
+                students = [];
+                saveData();
+                updateStudentList();
+            }
+        }
+        
+        function showBatchImport() {
+            document.getElementById('batch-import-modal').classList.remove('hidden');
+            document.getElementById('batch-input').value = '';
+        }
+        
+        function hideBatchImport() {
+            document.getElementById('batch-import-modal').classList.add('hidden');
+        }
+        
+        function doBatchImport() {
+            const text = document.getElementById('batch-input').value.trim();
+            if (!text) {
+                alert('请输入学生信息！');
+                return;
+            }
+            
+            const lines = text.split('\n');
+            let added = 0;
+            let skipped = 0;
+            
+            let maxCode = students.length > 0 ? Math.max(...students.map(s => parseInt(s.code))) : 0;
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
+                let name, code;
+                if (line.includes(',')) {
+                    const parts = line.split(',');
+                    name = parts[0].trim();
+                    code = parts[1].trim();
+                    
+                    if (code && (!code.match(/^\d{5}$/))) {
+                        alert('编码格式错误：' + line + '\n编码必须是5位数字！');
+                        return;
+                    }
+                } else {
+                    name = line;
+                    code = null;
+                }
+                
+                if (!name) return;
+                
+                if (students.some(s => s.name === name)) {
+                    skipped++;
+                    return;
+                }
+                
+                if (code && students.some(s => s.code === code)) {
+                    skipped++;
+                    return;
+                }
+                
+                if (!code) {
+                    maxCode++;
+                    code = String(maxCode).padStart(5, '0');
+                } else {
+                    const codeNum = parseInt(code);
+                    if (codeNum > maxCode) {
+                        maxCode = codeNum;
+                    }
+                }
+                
+                students.push({name: name, code: code});
+                added++;
+            });
+            
+            saveData();
+            updateStudentList();
+            hideBatchImport();
+            
+            let msg = '成功导入 ' + added + ' 名学生';
+            if (skipped > 0) {
+                msg += '\n跳过 ' + skipped + ' 个重复项';
+            }
+            alert(msg);
+        }
+        
+        function randomRollCall() {
+            if (students.length === 0) {
+                alert('名单为空，请先添加学生！');
+                return;
+            }
+            if (isAnimating) return;
+            
+            const num = Math.max(1, parseInt(document.getElementById('roll-num').value) || 1);
+            if (num > students.length) {
+                alert('点名人数超过学生总数！');
+                return;
+            }
+            
+            isAnimating = true;
+            const targets = [];
+            const temp = [...students];
+            for (let i = 0; i < num; i++) {
+                const idx = Math.floor(Math.random() * temp.length);
+                targets.push(temp.splice(idx, 1)[0]);
+            }
+            
+            let step = 0;
+            const totalSteps = 22;
+            const resultEl = document.getElementById('roll-result');
+            
+            const animate = () => {
+                step++;
+                if (step < totalSteps) {
+                    const sample = [];
+                    const temp2 = [...students];
+                    for (let i = 0; i < num; i++) {
+                        const idx = Math.floor(Math.random() * temp2.length);
+                        sample.push(temp2.splice(idx, 1)[0]);
+                    }
+                    resultEl.textContent = sample.map(s => s.name).join('、');
+                    resultEl.style.color = '#4F46E5';
+                    setTimeout(animate, 50 + step * 15);
+                } else {
+                    resultEl.textContent = targets.map(s => s.name).join('、');
+                    resultEl.style.color = '#DC2626';
+                    document.getElementById('roll-progress').textContent = '随机点名完成 (共 ' + num + ' 人)';
+                    isAnimating = false;
+                }
+            };
+            animate();
+        }
+        
+        function initAttendance() {
+            const today = new Date().toISOString().split('T')[0];
+            attendedStudents = [...(attendanceRecords[today] || [])];
+            updateAttendanceStats();
+            updateAttendedList();
+        }
+        
+        function updateAttendanceStats() {
+            const stats = document.getElementById('attendance-stats');
+            const attended = attendedStudents.length;
+            const notAttended = students.length - attended;
+            stats.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-num" style="color: #10B981;">${attended}</div>
+                    <div class="stat-label">已签到</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num" style="color: #EF4444;">${notAttended}</div>
+                    <div class="stat-label">未签到</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num" style="color: #475569;">${students.length}</div>
+                    <div class="stat-label">总人数</div>
+                </div>
+            `;
+        }
+        
+        function updateAttendedList() {
+            const list = document.getElementById('attended-list');
+            list.innerHTML = '';
+            attendedStudents.forEach((student, index) => {
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `<span>${index + 1}. ${student.name} (${student.code})</span>`;
+                list.appendChild(item);
+            });
+        }
+        
+        function showStatus(msg, type) {
+            const status = document.getElementById('attendance-status');
+            status.textContent = msg;
+            status.className = 'status-msg status-' + type;
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 3000);
+        }
+        
+        function checkCode() {
+            const codeInput = document.getElementById('attendance-code').value.trim();
+            if (!codeInput) {
+                showStatus('请输入编码！', 'error');
+                return;
+            }
+            
+            const codes = codeInput.split(',').map(c => c.trim()).filter(c => c);
+            let successCount = 0;
+            const errors = [];
+            const successful = [];
+            
+            codes.forEach(code => {
+                if (!code.match(/^\d{5}$/)) {
+                    errors.push('编码 ' + code + ' 必须是5位数字');
+                    return;
+                }
+                
+                const student = students.find(s => s.code === code);
+                if (!student) {
+                    errors.push('编码 ' + code + ' 不存在');
+                    return;
+                }
+                
+                if (attendedStudents.some(s => s.code === code)) {
+                    errors.push(student.name + ' 已签到');
+                    return;
+                }
+                
+                attendedStudents.push(student);
+                successful.push(student);
+                successCount++;
+            });
+            
+            if (successCount > 0) {
+                if (successCount === 1) {
+                    showStatus(successful[0].name + ' 签到成功！', 'success');
+                } else {
+                    showStatus('成功签到 ' + successCount + ' 名学生！', 'success');
+                }
+                updateAttendanceStats();
+                updateAttendedList();
+            }
+            
+            if (errors.length > 0) {
+                showStatus(errors.join('、'), 'error');
+            }
+            
+            document.getElementById('attendance-code').value = '';
+        }
+        
+        function finishAttendance() {
+            if (attendedStudents.length === 0) {
+                alert('暂无学生签到！');
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            attendanceRecords[today] = [...attendedStudents];
+            saveData();
+            
+            alert('签到完成！\n日期: ' + today + '\n签到人数: ' + attendedStudents.length + ' 人');
+            updateHistoryList();
+        }
+        
+        function updateHistoryList() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            
+            const dates = Object.keys(attendanceRecords).sort().reverse();
+            if (dates.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #94A3B8; padding: 40px;">暂无签到记录</div>';
+                return;
+            }
+            
+            dates.forEach(date => {
+                const records = attendanceRecords[date];
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <div class="history-date">📅 ${date}</div>
+                    <div class="history-info">签到人数: ${records.length}/${students.length}</div>
+                    ${records.length > 0 ? '<div class="history-info">学生: ' + records.map(s => s.name).join('、') + '</div>' : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        loadData();
+    </script>
+</body>
 </html>
